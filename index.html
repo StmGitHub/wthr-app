@@ -1,21 +1,31 @@
-<div class="container">
-  <h1>Weather App</h1>
-  <div class="searchContainer">
-    <input
-      class="inputField"
-      id="cityField"
-      placeholder="Enter city name ..."
-      type="text"
-    />
-    <button id="searchBtn">Search</button>
-  </div>
-</div>
-<div id="weatherContainer">
-	<h2 id="cityName"></h2>
-	<p id="temperature"><</p>
-	<p id="condition"></p>
-	<p id="windspeed"></p>
-</div>
-<p id="errorMessage"</p>
-</div>
-<script src="script.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Weather App</h1>
+      <div class="searchContainer">
+        <input
+          class="inputField"
+          id="cityField"
+          placeholder="Enter city name ..."
+          type="text"
+        />
+        <button id="searchBtn">Search Now!</button>
+      </div>
+      <div id="weatherContainer">
+        <h2 id="cityName"></h2>
+        <p id="temperature"></p>
+        <p id="condition"></p>
+        <p id="windspeed"></p>
+      </div>
+      <p id="errorMessage"</p>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
