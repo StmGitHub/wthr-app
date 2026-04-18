@@ -87,3 +87,45 @@ document.getElementById("searchBtn").addEventListener("click", () => {
   }
 });
 
+// The correct answer (you can change this easily)
+const correctAnswer = "888 + 88 + 8 + 8 + 8 = 1000";   // or just "1000" if you want to accept the result
+
+function checkAnswer() {
+  const userInput = document.getElementById("user-answer").value.trim();
+  const feedback = document.getElementById("feedback");
+  const quoteSection = document.getElementById("quote-section");
+  
+  // Simple check (case-insensitive, allows some flexibility)
+  if (userInput.toLowerCase().includes("888") && 
+      (userInput.includes("88") || userInput.includes("1000"))) {
+    
+    feedback.style.color = "green";
+    feedback.textContent = "Correct! Well done 🎉";
+    
+    // Show quote
+    quoteSection.style.display = "block";
+    fetchRandomQuote();
+    
+  } else {
+    feedback.style.color = "red";
+    feedback.textContent = "Not quite. Try again! (Hint: think about grouping the 8's)";
+  }
+}
+
+// Fetch a random famous quote (using Quotable.io — completely free, no API key needed)
+async function fetchRandomQuote() {
+  try {
+    const response = await fetch("https://api.quotable.io/random");
+    const data = await response.json();
+    
+    document.getElementById("quote-text").textContent = `"${data.content}"`;
+    document.getElementById("quote-author").textContent = `— ${data.author}`;
+    
+  } catch (error) {
+    console.error("Quote API error:", error);
+    // Fallback quote if API fails
+    document.getElementById("quote-text").textContent = "\"The only way to do great work is to love what you do.\"";
+    document.getElementById("quote-author").textContent = "— Steve Jobs";
+  }
+}
+

@@ -26,6 +26,29 @@
       </div>
       <p id="errorMessage"</p>
     </div>
+
+  <br>
+
+  <div class="container">
+    <div id="math-puzzle">
+      <h2>Math Puzzle Challenge</h2>
+      <p id="puzzle-text">Using only the digit 8 and the operations +, make the number 1000.</p>
+	<i style="font-size:13px;">Hint: it uses 8 8's...</i>
+  
+      <input type="text" id="user-answer" placeholder="Enter your answer here" style="width: 80%; padding: 10px; margin: 15px 0; font-size: 16px;">
+     <br>
+     <button onclick="checkAnswer()" style="padding: 10px 20px; font-size: 16px;">Submit Answer</button>
+  
+     <div id="feedback" style="margin-top: 20px; font-weight: bold;"></div>
+  
+    <!-- Quote section (hidden until correct) -->
+    <div id="quote-section" style="display: none; margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+      <h3>Here's a famous quote for you:</h3>
+      <p id="quote-text" style="font-style: italic; font-size: 18px;"></p>
+      <p id="quote-author" style="font-weight: bold;"></p>
+    </div>
+    </div>
+  </div>
     <script src="script.js"></script>
   </body>
 </html>
