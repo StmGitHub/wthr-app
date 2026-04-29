@@ -87,36 +87,126 @@ document.getElementById("searchBtn").addEventListener("click", () => {
   }
 });
 
-// The correct answer (you can change this easily)
-const correctAnswer = "888 + 88 + 8 + 8 + 8 = 1000";   // or just "1000" if you want to accept the result
+const dailyMathPuzzles = [
+  {
+    prompt:
+      "Using only the digit 8 and the operations +, make the number 1000.",
+    hint: "It uses five 8s.",
+    validate: (input) => {
+      const compact = input.replace(/\s+/g, "");
+      return compact === "888+88+8+8+8=1000" || compact === "888+88+8+8+8";
+    },
+  },
+  {
+    prompt: "What is 12 × 12?",
+    hint: "It is a square number.",
+    validate: (input) => input.replace(/\s+/g, "") === "144",
+  },
+  {
+    prompt:
+      "If 3 cats catch 3 mice in 3 minutes, how many cats catch 100 mice in 100 minutes?",
+    hint: "Focus on each cat's rate.",
+    validate: (input) => input.replace(/\s+/g, "") === "3",
+  },
+  {
+    prompt: "What comes next in the pattern: 2, 6, 12, 20, 30, ?",
+    hint: "n(n+1)",
+    validate: (input) => input.replace(/\s+/g, "") === "42",
+  },
+  {
+    prompt: "I am an odd number. Take away one letter and I become even. What am I?",
+    hint: "Try writing the number as a word.",
+    validate: (input) => {
+      const normalized = input.trim().toLowerCase();
+      return normalized === "seven" || normalized === "7";
+    },
+  },
+];
+
+const dailyQuoteStorageKey = "dailyQuote";
+let activeDailyPuzzle = null;
+
+function getDateKey() {
+  const now = new Date();
+  const month = `${now.getMonth() + 1}`.padStart(2, "0");
+  const day = `${now.getDate()}`.padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function getDailyPuzzle() {
+  const dateKey = getDateKey();
+  const dateSeed = Number(dateKey.replace(/-/g, ""));
+  const index = dateSeed % dailyMathPuzzles.length;
+  return dailyMathPuzzles[index];
+}
+
+function initializeDailyPuzzle() {
+  activeDailyPuzzle = getDailyPuzzle();
+  const puzzleText = document.getElementById("puzzle-text");
+  const puzzleHint = document.getElementById("puzzle-hint");
+  if (puzzleText) {
+    puzzleText.textContent = activeDailyPuzzle.prompt;
+  }
+  if (puzzleHint) {
+    puzzleHint.textContent = `Hint: ${activeDailyPuzzle.hint}`;
+  }
+}
 
 function checkAnswer() {
   const userInput = document.getElementById("user-answer").value.trim();
   const feedback = document.getElementById("feedback");
   const quoteSection = document.getElementById("quote-section");
   
-  // Simple check (case-insensitive, allows some flexibility)
-  if (userInput.toLowerCase().includes("888") && 
-      (userInput.includes("88") || userInput.includes("1000"))) {
+  if (!activeDailyPuzzle) {
+    initializeDailyPuzzle();
+  }
+
+  if (activeDailyPuzzle.validate(userInput)) {
     
     feedback.style.color = "green";
     feedback.textContent = "Correct! Well done 🎉";
     
     // Show quote
     quoteSection.style.display = "block";
-    fetchRandomQuote();
+    fetchDailyQuote();
     
   } else {
     feedback.style.color = "red";
-    feedback.textContent = "Not quite. Try again! (Hint: think about grouping the 8's)";
+    feedback.textContent = "Not quite. Try again using the hint above.";
   }
 }
 
 // Fetch a random famous quote (using Quotable.io — completely free, no API key needed)
-async function fetchRandomQuote() {
+async function fetchDailyQuote() {
+  const dateKey = getDateKey();
+  const cachedQuote = localStorage.getItem(dailyQuoteStorageKey);
+  if (cachedQuote) {
+    try {
+      const parsedQuote = JSON.parse(cachedQuote);
+      if (
+        parsedQuote.dateKey === dateKey &&
+        parsedQuote.content &&
+        parsedQuote.author
+      ) {
+        document.getElementById("quote-text").textContent = `"${parsedQuote.content}"`;
+        document.getElementById("quote-author").textContent = `— ${parsedQuote.author}`;
+        return;
+      }
+    } catch (error) {
+      localStorage.removeItem(dailyQuoteStorageKey);
+    }
+  }
   try {
     const response = await fetch("https://api.quotable.io/random");
     const data = await response.json();
+    localStorage.setItem(
+      dailyQuoteStorageKey,
+      JSON.stringify({
+        dateKey,
+        content: data.content,
+        author: data.author,
+      })
+    );
     
     document.getElementById("quote-text").textContent = `"${data.content}"`;
     document.getElementById("quote-author").textContent = `— ${data.author}`;
@@ -128,4 +218,6 @@ async function fetchRandomQuote() {
     document.getElementById("quote-author").textContent = "— Steve Jobs";
   }
 }
+
+initializeDailyPuzzle();
 
